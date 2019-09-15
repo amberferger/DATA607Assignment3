@@ -1,0 +1,128 @@
+---
+title: 'Assignment 3: R Character Manipulation'
+author: "Amber Ferger"
+date: "9/13/2019"
+output: html_document
+---
+
+### Libraries
+
+```{r libaries, eval = TRUE}
+
+library(stringr)
+
+```
+
+
+### Question 3
+**Copy the introductory example. The vector name stores the extracted names.**
+
+``` {r question3, eval=TRUE}
+
+rawData <-"555-1239Moe Szyslak(636) 555-0113Burns, C. Montgomery555-6542Rev. Timothy Lovejoy555 8904Ned Flanders636-555-3226Simpson, Homer5553642Dr. Julius Hibbert"
+```
+
+* **Use the tools in this chapter to rearrange the vector so that all elements conform to the standard first_name last_name.**
+``` {r question3a, eval = TRUE}
+
+names <- unlist(str_extract_all(rawData, "[[:alpha:]., ]{2,}"))
+
+firstName <- unlist(str_extract_all(names, "\\b[[:alpha:]]+[ ]|[. ][[:alpha:]]+$"))
+firstName <- str_trim(firstName)
+
+lastName <- unlist(str_extract_all(names, "\\b[[:alpha:]]+[,]|[[:alpha:]][ ][[:alpha:]]+$"))
+lastName <- str_replace_all(lastName, pattern = '[[:alpha:]][ ]','')
+lastName <- str_replace_all(lastName, pattern = ',','')
+
+finalNames <- str_c(firstName,' ', lastName)
+finalNames
+
+
+```
+
+
+* **Construct a logical vector indicating whether a character has a title (i.e., Rev. and Dr.).**
+``` {r question3b, eval = TRUE}
+
+str_detect(names, "^\\b[[:alpha:]]+[.]")
+
+```
+
+
+* **Construct a logical vector indicating whether a character has a second name.**
+``` {r question3c, eval = TRUE}
+
+
+str_detect(names, "[ ][[:alpha:]]+[.?][ ]")
+
+```
+
+
+
+### Question 4
+**Describe the types of strings that conform to the following regular expressions and construct an example that is matched by the regular expression.**
+
+* **[0-9]+\\$ **
+``` {r question4a, eval = TRUE}
+
+# Description: one or more numbers followed by a $
+question4a <- c('1234$', '23$', 'qwerty4$')
+str_detect(question4a, "[0-9]+\\$")
+
+```
+
+
+* **\\b[a-z]{1,4}\\b**
+``` {r question4b, eval = TRUE}
+
+# Description: Starts with at least 1 lowercase letter, at most 4 lowercase letters and does not have any other character following
+question4b <- c('a','abc','abcd', 'my name is sue')
+str_detect(question4b, "\\b[a-z]{1,4}\\b")
+
+```
+
+
+* .*?\\.txt$
+``` {r question4c, eval = TRUE}
+
+# Description: any number of characters followed by .txt at the end
+question4c <- c('a.txt', '.txt', 'example.txt')
+str_detect(question4c, ".*?\\.txt$")
+
+```
+
+
+* **\\d{2}/\\d{2}/\\d{4}**
+``` {r question4d, eval = TRUE}
+
+# Description: This describes a date. Starts with 2 numbers, then a forward slash, 2 more numbers, another forward slash, and ends with 4 numbers
+
+question4d <- c('01/01/1999','12/31/2019','04/15/2018')
+str_detect(question4d, "\\d{2}/\\d{2}/\\d{4}")
+
+
+```
+
+* **<(.+?)>.+?</\\1>**
+``` {r question4e, eval = TRUE}
+
+# Description: Any number of characters wrapped in <>, then any number of characters, and finally the same characters wrapped in <> but with a preceeding backslash
+
+question4e <- c('<b> This is bold text. </b>','<u> This is underlined text. </u>',' <head> This is a header </head>')
+str_detect(question4e, "<(.+?)>.+?</\\1>")
+```
+
+
+### Question 9
+**The following code hides a secret message. Crack it with R and regular expressions. Hint: Some of the characters are more revealing than others! The code snippet is also available in the materials at www.r-datacollection.com.**
+
+``` {r question9, eval=TRUE}
+
+scrambled <- 'clcopCow1zmstc0d87wnkig7OvdicpNuggvhryn92Gjuwczi8hqrfpRxs5Aj5dwpn0Tanwo Uwisdij7Lj8kpf03AT5Idr3coc0bt7yczjatOaootj55t3Nj3ne6c4Sfek.r1w1YwwojigO d6vrfUrbz2.2bkAnbhzgv4R9i05zEcrop.wAgnb.SqoU65fPa1otfb7wEm24k6t3sR9zqe5 fy89n6Nd5t9kc4fE905gmc4Rgxo5nhDk!gr'
+
+
+unlist(str_extract_all(scrambled, "[A-Z]"))
+
+# Congratuations you are a super nerd
+
+```
